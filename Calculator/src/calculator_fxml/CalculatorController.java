@@ -4,6 +4,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import java.lang.Math;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class CalculatorController {
 	
@@ -50,8 +53,8 @@ public class CalculatorController {
 		if(isFraction(negativeNumber)) {
 			currentNumber.setText(String.valueOf(negativeNumber));
 		} else {
-			String format = String.format("%.0f", negativeNumber);
-			currentNumber.setText(format);
+			String formattedString = String.format("%.0f", negativeNumber);
+			currentNumber.setText(formattedString);
 		}
 	}
 	
@@ -109,10 +112,13 @@ public class CalculatorController {
 		result = calculate(arithmeticCommand, firstComponentOfEquation, secondComponentOfEquation);
 		
 		if(isFraction(result)) {
-			currentNumber.setText(String.valueOf(result));
+			Double toBeTruncated = new Double(result);
+			Double truncatedDouble = BigDecimal.valueOf(toBeTruncated)
+				    .setScale(6, RoundingMode.HALF_UP).doubleValue();
+			currentNumber.setText(String.valueOf(truncatedDouble));
 		} else {
-			String format = String.format("%.0f", result);
-			currentNumber.setText(format);
+			String formattedString = String.format("%.0f", result);
+			currentNumber.setText(formattedString);
 		}
 		
 		newEntry = true;
@@ -120,10 +126,10 @@ public class CalculatorController {
 	}
 	
 	private boolean isFraction(double result) {
-		if(result != Math.floor(result)) {
-			return true;
-		} else {
+		if(result == Math.floor(result)) {
 			return false;
+		} else {
+			return true;
 		}
 	}
 	
